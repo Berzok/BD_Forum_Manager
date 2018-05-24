@@ -1,7 +1,24 @@
 #ifndef FONCTIONS_H_INCLUDED
 #define FONCTIONS_H_INCLUDED
+#define pass (void)0
 
-int connexion(){
+
+
+
+
+char connexion();
+
+void menu(char login);
+
+void reconnaissance(char action);
+
+void listeGroupes();
+
+void recherche();
+
+void top20();
+
+char connexion(){
 	printf("Entrez votre login\n");
 	char login;
 	login = scanf("%c", &login);
@@ -14,16 +31,23 @@ int connexion(){
 		pwd = getch();
 		fflush(stdin);
 		if(pwd == 13)
-            break;
+			break;
 		printf("*");
 		password = password + pwd;
 		i++;
 		taille++;
 		}
 	system("cls");
-	menu(login);
+	int i = 0;
+	while(i<4)
+		{
+		printf(".");
+		system("sleep(5000)");
+		i++;
+		}
+	return login;
 	//return 0;
-}
+	}
 
 void menu(char login){
 	char log = login;
@@ -32,25 +56,26 @@ void menu(char login){
 	char action[10];
 	scanf("%s", action);
 	reconnaissance(action);
-}
+	}
 
 void reconnaissance(char action){
 	char act[10];
 	if (act == "groupe"){
 		listeGroupes();
-	}
+		}
 	if (act == "message"){
 		recherche();
-	}
+		}
 	if (act == "top"){
 		top20();
-	}
+		}
 	else{
 		printf("Erreur, veuillez selectionner une autre entrée");
+		}
 	}
-}
 
-void listeGroupes(){
+void listeGroupes()
+	{
 	EXEC SQL BEGIN DECLARE SECTION;
 	char nomGroupe[];
 	int nbGroupes;
@@ -64,27 +89,29 @@ void listeGroupes(){
 	int i = 0;
 	int entree;
 	printf("id du groupe \t Nom du groupe");
-		for(i = 0 ; i < 20 ; i++){
-			while(sql.sqlcode != 1403){
+	for(i = 0 ; i < 20 ; i++)
+		{
+		while(sql.sqlcode != 1403)
+			{
 			printf("%d \t %s", idGroupe, nomGroupe);
 			EXEC SQL FETCH C1G INTO :idGroupe, :nomGroupe;
 			printf("Suite ? 0 \t Selection d'un groupe ? id");
 			scanf("%d", entree);
 			if (entree == 0)
-				i = 0
+				i = 0;
 			else
-				
+				pass;
+			}
 		}
+	EXEC SQL CLOSE C1G;
 	}
-	EXEC SQL CLOSE C1G
-	
-}
 
-void recherche(){
+void recherche()
+	{
 	EXEC SQL BEGIN DECLARE SECTION;
 	int idM;
 	varchar titreM[50];
-	times tamp dateM;
+	OCIDate dateM;
 	char nomAuteur [10];
 	char texteM[100];
 	int idG;
@@ -92,10 +119,11 @@ void recherche(){
 	EXEC SQL END DECLARE SECTION;
 	char entree1[5];
 	printf("Oui ou non avez-vous le pseudo de l'auteur du message ?");
-	scanf("%s", entree1)
+	scanf("%s", entree1);
 	if (entree1 == "non")
-		
+		pass;
 	if (entree1 == "oui")
+		{
 		printf("Entrez le pseudo");
 		scanf("%d", &nomAuteur);
 		EXEC SQL DECLARE C1R CURSOR FOR SELECT * FROM NEWSGROUPS.message WHERE NEWSGROUPS.message.auteur LIKE "&nomAuteur";
@@ -104,51 +132,32 @@ void recherche(){
 		int i = 0;
 		int entree;
 		printf("id groupe\t titre\t message\t date\t message\t Auteur\t Texte\t id Groupe\t Message Pere\n");
-			for(i = 0 ; i < 20 ; i++){
-				while(sql.sqlcode != 1403){
+		for(i = 0 ; i < 20 ; i++)
+			{
+			while(sql.sqlcode != 1403)
+				{
 				printf("%d \t %s", idGroupe, nomGroupe);
 				EXEC SQL FETCH C1R INTO :idM, :titreM, :dateM, :nomAuteur, :texteM, :idG, :idMPere;
 				printf("Suite ? 0 \t Selection d'un message ? id");
 				scanf("%d", entree);
 				if (entree == 0)
-					i = 0
+					i = 0;
 				else
-					
+					pass;
+				}
 			}
-	}
-	EXEC SQL CLOSE C1G
-		
+		EXEC SQL CLOSE C1G;
+		}
 	else
-		printf("Je n'ai pas compris...")
+		printf("Je n'ai pas compris...");
 		recherche();
-
-
-
-}
-
+	}
+	
 void top20(){
 	
 	
 	
-}
-
-//void affichage(char requete[2]){
-//	char debutR = requete[0];
-//	char forR = requete[1];
-//	char whereR = requete[2]
-//	EXEC SQL DECLARE C CURSOR FOR debutR FROM forR whereR;
-//	EXEC SQL OPEN C;
-//	EXEC SQL FETCH C INTO
-//}
-
-
-
-
-
-
-
-
-
+	}
 
 
 #endif // FONCTIONS_H_INCLUDED
