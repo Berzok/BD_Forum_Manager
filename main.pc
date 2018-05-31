@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "fonctions.h"
-//#include<sqlca.h>
+#include </usr/lib/oracle/12.1/client64/sdk/include/sqlca.h>
 
 
 /*
@@ -10,7 +10,6 @@ Le main
 
 int main()
 	{
-	char tamere;
 	menu(connexion());
 	return 0;
 	}
@@ -27,43 +26,36 @@ char connexion()
 	EXEC SQL BEGIN DECLARE SECTION;
 	char login;
 	char mdp;
+	char password;
 	EXEC SQL END DECLARE SECTION;
 	printf("Entrez votre login\n");
 	login = scanf("%c", &login);
 	printf("Entrez votre mot de passe\n");
 	fflush(stdin);
 	printf("Mot de passe: ");
-	while(pwd != 13)
+	int i = 0;
+	while(mdp != 13)
 		{
-		pwd = getch();
+		mdp = getch();
 		fflush(stdin);
-		if(pwd == 13)
+		if(mdp == 13)
 			break;
 		printf("*");
-		password = password + pwd;
+		mdp = password + mdp;
 		i++;
-		taille++;
 		}
 	system("cls");
 	EXEC SQL CONNECT :login IDENTIFIED BY :mdp;
-	int i = 0;
 	while(i<4)
 		{
 		printf(".");
 		system("sleep(5000)");
 		i++;
 		}
-	return login;
+	return (login, mdp);
 	}
 
-void menu(char login, char mdp){
-	char log = login;
-	printf("Bienvenue %c \n", log);
-	printf("Choisissez une action :\n	-Choisir un groupe :\t groupe\n	-Rechercher un message : \t message\n	-Afficher le top 20 : \t top");
-	char action[10];
-	scanf("%s", action);
-	reconnaissance(action);
-	}
+
 
 void reconnaissance(char action){
 	char act[10];
@@ -80,6 +72,20 @@ void reconnaissance(char action){
 		printf("Erreur, veuillez selectionner une autre entrée");
 		}
 	}
+
+
+
+
+
+void menu(char login){
+	char log = login;
+	printf("Bienvenue %c \n", log);
+	printf("Choisissez une action :\n	-Choisir un groupe :\t groupe\n	-Rechercher un message : \t message\n	-Afficher le top 20 : \t top");
+	char action[10];
+	scanf("%s", action);
+	reconnaissance(action);
+	}
+
 
 void listeGroupes()
 	{
@@ -115,8 +121,8 @@ void listeGroupes()
 
 void recherche()
 	{
-	VARCHAR *titreM[NULL];
 	EXEC SQL BEGIN DECLARE SECTION;
+	varchar *titreM[NULL];
 	int idM;
 	char dateM[15];
 	varchar nomAuteur[10];
@@ -145,7 +151,7 @@ void recherche()
 			while(sql.sqlcode != 1403)
 				{
 				printf("%d \t %s", idGroupe, nomGroupe);
-				EXEC SQL FETCH C1R INTO :idM, :titreM, :dateM, :nomAuteur, :texteM, :idG, :idMPere;
+						EXEC SQL FETCH C1R INTO :idM, :titreM, :dateM, :nomAuteur, :texteM, :idGroupe, :idMPere;
 				printf("Suite ? 0 \t Selection d'un message ? id");
 				scanf("%d", entree);
 				if (entree == 0)
@@ -161,10 +167,27 @@ void recherche()
 		recherche();
 	}
 
-void top20(){
-	
-	
-	
+void top20(int debut){
+	EXEC SQL BEGIN DECLARE SECTION;
+	int idM;
+	char dateM[15];
+	varchar nomAuteur[10];
+	char nomGroupe;
+	char texteM[100];
+	int idGroupe;
+	int idMPere;
+	EXEC SQL END DECLARE SECTION;
+	printf("Top 20 des messages.\nChoisissez une option :\n-20 Suivants\n-Sélectionner un message\n-Retour");
+	char entree1[10];
+	char entree2[10];
+	scanf("%s", &entree1);
+	if (entree1 == "Suivants")
+		top20(debut + 20);
+	if (entree1 == "message")
+		printf("Entrez l'id du messages");
+		scanf("%s", &entree2);
+	if (entree1 == "retour")
+		menu(*"");
 	}
 
 //void affichage(char requete[2]){
